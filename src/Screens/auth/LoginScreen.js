@@ -26,7 +26,6 @@ const LoginScreen = ({ navigation }) => {
   const keyboardHide = () => {
     setIsShowKeyboard(false);
     Keyboard.dismiss();
-    console.log(initialState);
   };
 
   const toggleShowPassword = () => {

@@ -12,7 +12,6 @@ import {
   TouchableWithoutFeedback,
 } from "react-native";
 import backgroundImg from "../../assets/image/bg.png";
-import { useNavigation } from "@react-navigation/native";
 import { AntDesign } from "@expo/vector-icons";
 
 const sizeSideAvatarPlace = 120;
@@ -26,7 +25,7 @@ const RegistrationScreen = ({ navigation }) => {
   const [isShowKeyboard, setIsShowKeyboard] = useState(false);
   const [isShowPassword, setIsShowPassword] = useState(false);
   const [state, setState] = useState(initialState);
-  const navigate = useNavigation();
+ 
 
   const keyboardHide = () => {
     setIsShowKeyboard(false);
@@ -38,7 +37,6 @@ const RegistrationScreen = ({ navigation }) => {
   };
 
   const handleOnPress = () => {
-    navigate.navigate("Posts");
     setState(initialState);
   };
 
