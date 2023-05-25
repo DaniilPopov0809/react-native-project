@@ -12,8 +12,8 @@ import {
   TouchableWithoutFeedback,
 } from "react-native";
 import backgroundImg from "../../assets/image/bg.png";
-import PlusIco from "../../assets/image/plus.svg";
-import { useNavigation } from "@react-navigation/native"
+import { useNavigation } from "@react-navigation/native";
+import { AntDesign } from "@expo/vector-icons";
 
 const sizeSideAvatarPlace = 120;
 const initialState = {
@@ -21,7 +21,6 @@ const initialState = {
   email: "",
   password: "",
 };
-
 
 const RegistrationScreen = ({ navigation }) => {
   const [isShowKeyboard, setIsShowKeyboard] = useState(false);
@@ -56,7 +55,7 @@ const RegistrationScreen = ({ navigation }) => {
                   activeOpacity={0.7}
                   style={styles.addAvatarBtn}
                 >
-                  {/* <PlusIco width={13} height={13} fill={"#FF6C00"} /> */}
+                  <AntDesign name="plus" size={18} color="#FF6C00" />
                 </TouchableOpacity>
               </View>
 

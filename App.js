@@ -13,7 +13,7 @@ export default function App() {
     return null;
   }
   
-  const routing = useRoute({})
+  const routing = useRoute(null)
 
   return <NavigationContainer >{routing}</NavigationContainer>;
 }
