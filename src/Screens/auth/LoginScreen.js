@@ -10,7 +10,6 @@ import {
   KeyboardAvoidingView,
   Keyboard,
   TouchableWithoutFeedback,
-  Button,
 } from "react-native";
 import backgroundImg from "../../assets/image/bg.png";
 
