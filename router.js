@@ -12,7 +12,8 @@ import PostsScreen from "./src/Screens/mainScreen/PostsScreen";
 import CreatePostsScreen from "./src/Screens/mainScreen/CreatePostsScreen";
 import ProfileScreen from "./src/Screens/mainScreen/ProfileScreen";
 
-import LogoutButton from "./components/LogoutButton/LogoutBotton";
+import LogoutButton from "./src/components/LogoutButton/LogoutBotton";
+import BackButton from "./src/components/BackButton/BackBotton";
 
 const AuthStack = createNativeStackNavigator();
 const MainTab = createBottomTabNavigator();
@@ -37,7 +38,20 @@ export const useRoute = (isAuth) => {
   return (
     <MainTab.Navigator
       screenOptions={{
+        tabBarStyle: { backgroundColor: "#ffffff" },
         tabBarShowLabel: false,
+        headerTitleStyle: {
+          fontWeight: "500",
+          fontSize: 17,
+          lineHeight: 22,
+          letterSpacing: -0.408,
+          color: "#212121",
+          // shadowColor: "#000",
+          // shadowOffset: { width: 0, height: 0.5 },
+          // shadowOpacity: 0.3,
+          // shadowRadius: 1,
+          // elevation: 2,
+        },
       }}
     >
       <MainTab.Screen
@@ -60,20 +74,16 @@ export const useRoute = (isAuth) => {
           ),
           headerTitle: "Публикации",
           headerTitleAlign: "center",
-          headerTitleStyle: {
-            fontWeight: 500,
-            fontSize: 17,
-            lineHeight: 22,
-            letterSpacing: -0.408,
-            color: "#212121",
-          },
+          contentOptions: { backgroundColor: "#FFFFFF" },
           headerRight: () => <LogoutButton />,
         }}
         name="Posts"
         component={PostsScreen}
       />
       <MainTab.Screen
+      
         options={{
+          tabBarStyle: { display: 'none' },
           tabBarIcon: ({ focused, size, color }) => (
             <View
               style={{
@@ -90,6 +100,9 @@ export const useRoute = (isAuth) => {
               />
             </View>
           ),
+          headerTitle: "Создать публикацию",
+          headerTitleAlign: "center",
+          headerLeft: () => <BackButton />,
         }}
         name="CreatePost"
         component={CreatePostsScreen}

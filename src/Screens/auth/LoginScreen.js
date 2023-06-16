@@ -11,7 +11,7 @@ import {
   Keyboard,
   TouchableWithoutFeedback,
 } from "react-native";
-import backgroundImg from "../../assets/image/bg.png";
+import backgroundImg from "../../image/bg.png";
 
 const initialState = {
   email: "",
@@ -142,7 +142,7 @@ const styles = StyleSheet.create({
     marginBottom: 32,
     textAlign: "center",
     fontFamily: "Roboto",
-    fontWeight: 500,
+    fontWeight: '500',
     fontSize: 30,
     lineHeight: 35,
     color: "#212121",
