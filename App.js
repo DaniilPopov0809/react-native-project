@@ -1,10 +1,12 @@
-import { StyleSheet, View } from "react-native";
+import { StyleSheet } from "react-native";
 import { useFonts } from "expo-font";
-import { NavigationContainer } from "@react-navigation/native";
+import { Provider } from "react-redux";
+import { store } from "./src/redux/store";
+import Main from "./src/components/Main/Main";
 
-import { useRoute } from "./router";
 
 export default function App() {
+
   const [fontsLoaded] = useFonts({
     Roboto: require("./src/fonts/Roboto-Regular.ttf"),
   });
@@ -13,9 +15,11 @@ export default function App() {
     return null;
   }
 
-  const routing = useRoute({});
-
-  return <NavigationContainer>{routing}</NavigationContainer>;
+  return (
+    <Provider store={store}>
+      <Main/>
+    </Provider>
+  );
 }
 
 const styles = StyleSheet.create({

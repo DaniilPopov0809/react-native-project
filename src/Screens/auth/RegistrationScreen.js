@@ -13,6 +13,8 @@ import {
 } from "react-native";
 import backgroundImg from "../../image/bg.png";
 import { AntDesign } from "@expo/vector-icons";
+import { useDispatch } from "react-redux";
+import { authRegisterUser } from "../../redux/auth/authOperations";
 
 const sizeSideAvatarPlace = 120;
 const initialState = {
@@ -25,7 +27,8 @@ const RegistrationScreen = ({ navigation }) => {
   const [isShowKeyboard, setIsShowKeyboard] = useState(false);
   const [isShowPassword, setIsShowPassword] = useState(false);
   const [state, setState] = useState(initialState);
- 
+
+  const dispatch = useDispatch();
 
   const keyboardHide = () => {
     setIsShowKeyboard(false);
@@ -36,8 +39,10 @@ const RegistrationScreen = ({ navigation }) => {
     setIsShowPassword(!isShowPassword);
   };
 
-  const handleOnPress = () => {
+  const handleSubmit = () => {
+    dispatch(authRegisterUser(state));
     setState(initialState);
+    keyboardHide();
   };
 
   return (
@@ -113,7 +118,7 @@ const RegistrationScreen = ({ navigation }) => {
                 <TouchableOpacity
                   activeOpacity={0.7}
                   style={styles.button}
-                  onPress={handleOnPress}
+                  onPress={handleSubmit}
                 >
                   <Text style={styles.buttonTitle}>Зарегистрироваться</Text>
                 </TouchableOpacity>
@@ -190,7 +195,7 @@ const styles = StyleSheet.create({
     marginBottom: 32,
     textAlign: "center",
     fontFamily: "Roboto",
-    fontWeight: '500',
+    fontWeight: "500",
     fontSize: 30,
     lineHeight: 35,
     color: "#212121",

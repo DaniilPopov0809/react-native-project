@@ -12,6 +12,8 @@ import {
   TouchableWithoutFeedback,
 } from "react-native";
 import backgroundImg from "../../image/bg.png";
+import { useDispatch } from "react-redux";
+import { authLogInUser } from "../../redux/auth/authOperations";
 
 const initialState = {
   email: "",
@@ -23,6 +25,8 @@ const LoginScreen = ({ navigation }) => {
   const [isShowPassword, setIsShowPassword] = useState(false);
   const [state, setState] = useState(initialState);
 
+  const dispatch = useDispatch();
+
   const keyboardHide = () => {
     setIsShowKeyboard(false);
     Keyboard.dismiss();
@@ -32,8 +36,10 @@ const LoginScreen = ({ navigation }) => {
     setIsShowPassword(!isShowPassword);
   };
 
-  const handleOnPress = () => {
+  const handleSubmit = () => {
+    dispatch(authLogInUser(state));
     setState(initialState);
+    keyboardHide();
   };
 
   return (
@@ -90,7 +96,7 @@ const LoginScreen = ({ navigation }) => {
                 <TouchableOpacity
                   activeOpacity={0.7}
                   style={styles.button}
-                  onPress={handleOnPress}
+                  onPress={handleSubmit}
                 >
                   <Text style={styles.buttonTitle}>Войти</Text>
                 </TouchableOpacity>
@@ -142,7 +148,7 @@ const styles = StyleSheet.create({
     marginBottom: 32,
     textAlign: "center",
     fontFamily: "Roboto",
-    fontWeight: '500',
+    fontWeight: "500",
     fontSize: 30,
     lineHeight: 35,
     color: "#212121",
