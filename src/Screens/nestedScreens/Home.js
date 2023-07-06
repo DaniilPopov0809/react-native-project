@@ -8,26 +8,49 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { Feather } from "@expo/vector-icons";
+import { collection, doc, onSnapshot, orderBy, query, setDoc } from 'firebase/firestore';
+import { db } from '../../firebase/config';
 
-const Home = ({ route, navigation }) => {
+
+const Home = ({ navigation }) => {
   const [posts, setPosts] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(false);
   const flatListRef = useRef(null);
 
-  const toComentsScreen = () => {
-    navigation.navigate("CommentsScreen");
+  useEffect(() => {
+    getAllPosts();
+  }, []);
+
+
+  const getAllPosts = async () => {
+    try {
+      setIsLoading(true);
+      setError(false);
+
+      const ref = collection(db, 'posts');
+      const sortedPostsQuery = query(ref, orderBy('timePublished', 'desc'));
+
+      onSnapshot(sortedPostsQuery, (snapshot) => {
+        const sortedPosts = snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
+        setPosts(sortedPosts);
+      });
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const toComentsScreen = (params) => {
+    navigation.navigate("CommentsScreen", params);
   };
 
   const toMapScreen = (params) => {
     navigation.navigate("MapScreen", params);
   };
 
-  useEffect(() => {
-    if (route.params) {
-      setPosts((prevState) => [...prevState, route.params]);
-    }
-  }, [route.params]);
-
-  useLayoutEffect(() => {
+    useLayoutEffect(() => {
     if (posts.length > 0) {
       flatListRef.current.scrollToEnd({ animated: true });
     }
@@ -43,10 +66,10 @@ const Home = ({ route, navigation }) => {
           <View style={styles.postContainer}>
             <Image source={{ uri: item.photo }} style={styles.photo} />
 
-            <Text style={styles.titleLocation}>{item.nameLocation}</Text>
+            <Text style={styles.titleLocation}>{item.comment}</Text>
             <View style={styles.navigateBar}>
               <View style={styles.barContainer}>
-                <TouchableOpacity onPress={toComentsScreen} activeOpacity={0.7}>
+                <TouchableOpacity onPress={()=>toComentsScreen(item)} activeOpacity={0.7}>
                   <Feather
                     name="message-circle"
                     size={24}
@@ -65,10 +88,9 @@ const Home = ({ route, navigation }) => {
                 />
                 <TouchableOpacity
                   onPress={() => toMapScreen(item)}
-                  // style={}
                   activeOpacity={0.7}
                 >
-                  <Text>{item.location}</Text>
+                  <Text>{item.nameLocation}</Text>
                 </TouchableOpacity>
               </View>
             </View>

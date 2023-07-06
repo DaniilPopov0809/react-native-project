@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
 import {
   View,
   Text,
@@ -19,20 +20,28 @@ import { Feather } from "@expo/vector-icons";
 import * as Location from "expo-location";
 import getLocation from "../../API/getLocation";
 import { verificationAddress } from "../../utils/utils";
+import { selectUserId, selectName } from "../../redux/auth/authSelectors";
+
+import { db, storage } from "../../firebase/config";
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import { collection, addDoc } from 'firebase/firestore'; 
 
 const CreatePostsScreen = ({ navigation }) => {
   const [camera, setCamera] = useState(null);
   const [photo, setPhoto] = useState(null);
   const [hasPermission, setHasPermission] = useState(null);
-  const [location, setLocation] = useState("");
   const [nameLocation, setNameLocation] = useState("");
+  const [comment, setComment] = useState("");
   const [isShowKeyboard, setIsShowKeyboard] = useState(false);
-  const [coords, setCords] = useState(null);
+  const [location, setLocation] = useState(null);
+
+  const userId = useSelector(selectUserId);
+  const name = useSelector(selectName);
 
   const isSend =
-    location.length !== 0 && nameLocation.length !== 0 && photo !== null;
+    nameLocation.length !== 0 && comment.length !== 0 && photo !== null;
   const isRemove =
-    location.length !== 0 || nameLocation.length !== 0 || photo !== null;
+    nameLocation.length !== 0 || comment.length !== 0 || photo !== null;
 
   useEffect(() => {
     (async () => {
@@ -60,19 +69,64 @@ const CreatePostsScreen = ({ navigation }) => {
   const takePhoto = async () => {
     {
       const getUrl = await camera.takePictureAsync();
-      const { coords } = await Location.getCurrentPositionAsync();
-      setCords(coords);
-      const { latitude, longitude } = coords;
-      const { address } = await getLocation(latitude, longitude);
+      const  {coords}  = await Location.getCurrentPositionAsync();
 
-      setLocation(verificationAddress(address));
+      const { address } = await getLocation(coords.latitude, coords.longitude);
+      setLocation(coords);
+      setNameLocation(verificationAddress(address));
       setPhoto(getUrl.uri);
     }
   };
 
   const sendData = () => {
-    navigation.navigate("Home", { photo, nameLocation, location, coords });
+    uploadPostToServer();
+    navigation.navigate("Home");
   };
+
+  const uploadPhotoToServer = async () => {
+
+    try {
+      const response = await fetch(photo);
+      const file = await response.blob();
+
+      const uniquePhotoId = Date.now().toString();
+
+      const path = `images/${uniquePhotoId}.jpeg`;
+
+      const storageRef = ref(storage, path);
+
+      const metadata = {
+        contentType: "image/jpeg",
+      };
+
+      await uploadBytes(storageRef, file, metadata);
+
+      const downloadPhoto = await getDownloadURL(storageRef);
+      return downloadPhoto;
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const uploadPostToServer = async () => {
+    const photo = await uploadPhotoToServer();
+
+    const newPost = {
+      photo,
+      userId,
+      name,
+      comment,
+      nameLocation,
+      location,
+      timePublished: +Date.now(),
+    };
+
+    try {
+      await addDoc(collection(db, 'posts'), newPost);
+    } catch (error) {
+      console.error('Error while adding doc: ', error.message);
+    }
+  }
 
   const keyboardHide = () => {
     setIsShowKeyboard(false);
@@ -81,8 +135,8 @@ const CreatePostsScreen = ({ navigation }) => {
 
   const removeFields = () => {
     setPhoto(null);
-    setLocation("");
     setNameLocation("");
+    setComment("");
   };
 
   return (
@@ -106,7 +160,7 @@ const CreatePostsScreen = ({ navigation }) => {
                       styles.cameraButtonConteiner,
                       photo
                         ? styles.cameraButtonConteinerTransparent
-                        : styles.cameraButtonConteinerWhite
+                        : styles.cameraButtonConteinerWhite,
                     ]}
                   >
                     <MaterialIcons
@@ -129,10 +183,10 @@ const CreatePostsScreen = ({ navigation }) => {
             style={styles.input}
             placeholder="Название..."
             placeholderTextColor="#BDBDBD"
-            value={nameLocation}
+            value={comment}
             onFocus={() => setIsShowKeyboard(true)}
             // onSubmitEditing={keyboardHide}
-            onChangeText={(value) => setNameLocation(value)}
+            onChangeText={(value) => setComment(value)}
           />
           <View style={styles.locationInputContainer}>
             <Feather
@@ -145,9 +199,9 @@ const CreatePostsScreen = ({ navigation }) => {
               style={[styles.input, styles.lastInput]}
               placeholder="Местность..."
               placeholderTextColor="#BDBDBD"
-              value={location}
+              value={nameLocation}
               onFocus={() => setIsShowKeyboard(true)}
-              onChangeText={(value) => setLocation(value)}
+              onChangeText={(value) => setNameLocation(value)}
             />
           </View>
           <TouchableOpacity

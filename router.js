@@ -1,4 +1,6 @@
 import React from "react";
+
+
 import { View, StyleSheet } from "react-native";
 
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
@@ -18,7 +20,7 @@ import BackButton from "./src/components/BackButton/BackBotton";
 const AuthStack = createNativeStackNavigator();
 const MainTab = createBottomTabNavigator();
 
-export const useRoute = (isAuth) => {
+export const useRouting = (isAuth) => {
   if (!isAuth) {
     return (
       <AuthStack.Navigator>
@@ -54,6 +56,7 @@ export const useRoute = (isAuth) => {
         },
       }}
     >
+
       <MainTab.Screen
         options={{
           tabBarIcon: ({ focused, size, color }) => (
@@ -72,12 +75,13 @@ export const useRoute = (isAuth) => {
               />
             </View>
           ),
+          // headerShown: route.name !== 'MapScreen' || route.name !== 'CommentsScreen',
           headerTitle: "Публикации",
           headerTitleAlign: "center",
           contentOptions: { backgroundColor: "#FFFFFF" },
           headerRight: () => <LogoutButton />,
         }}
-        name="Posts"
+        name="PostsScreen"
         component={PostsScreen}
       />
       <MainTab.Screen
@@ -132,3 +136,4 @@ export const useRoute = (isAuth) => {
     </MainTab.Navigator>
   );
 };
+

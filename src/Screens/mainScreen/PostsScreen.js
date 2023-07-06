@@ -3,7 +3,6 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Home from "../nestedScreens/Home";
 import MapScreen from "../nestedScreens/MapScreen";
 import CommentsScreen from "../nestedScreens/CommentsScreen";
-
 const NestedScreen = createNativeStackNavigator();
 
 const PostsScreen = () => {
@@ -17,17 +16,15 @@ const PostsScreen = () => {
         }}
       />
       <NestedScreen.Screen
-        name="MapScreen"
-        component={MapScreen}
-        options={{
-          headerShown: false,
-        }}
-      />
-      <NestedScreen.Screen
         name="CommentsScreen"
         component={CommentsScreen}
         options={{
-          headerShown: false,
+        }}
+      />
+      <NestedScreen.Screen
+        name="MapScreen"
+        component={MapScreen}
+        options={{
         }}
       />
     </NestedScreen.Navigator>

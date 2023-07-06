@@ -23,20 +23,9 @@ export const authRegisterUser =
         }
       }
 
-      const { uid, displayName } = user;
+      const { uid, displayName } = auth.currentUser;
 
       dispatch(updateUserProfile({ userId: uid, name: displayName }));
-    } catch (error) {
-      console.log("error", error);
-      console.log("error.message", error.message);
-    }
-  };
-
-export const authLogInUser =
-  ({ email, password }) =>
-  async (dispatch, getState) => {
-    try {
-      await signInWithEmailAndPassword(auth, email, password);
     } catch (error) {
       console.log("error", error);
       console.log("error.message", error.message);
@@ -50,11 +39,22 @@ export const authStateChangeUser = () => async (dispatch, getState) => {
         name: user.displayName,
         userId: user.uid,
       };
-      dispatch(updateUserProfile(userUpdateProfile));
       dispatch(authStateChange({ stateChange: true }));
+      dispatch(updateUserProfile(userUpdateProfile));
     }
   });
 };
+
+export const authLogInUser =
+  ({ email, password }) =>
+  async (dispatch, getState) => {
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+    } catch (error) {
+      console.log("error", error);
+      console.log("error.message", error.message);
+    }
+  };
 
 export const authLogOutUser = () => async (dispatch, getState) => {
   await auth.signOut();
